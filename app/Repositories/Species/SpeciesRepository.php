@@ -21,15 +21,15 @@ class SpeciesRepository implements SpeciesContract
         return Species::find($id);
     }
 
-    public function update(array $data): Species
+    public function update(array $where, array $data): Species
     {
-        $this->species->update($data);
+        $this->species->where($where)->update($data);
         return $this->species->refresh();
     }
 
-    public function destroy(int|string $id): Species
+    public function destroy(int|string $id): bool
     {
-        return $this->species;
+        return $this->species->delete();
     }
 
     public function firstOrCreate(
@@ -37,5 +37,10 @@ class SpeciesRepository implements SpeciesContract
         array $attributes = [],
     ): Species {
         return $this->species->firstOrCreate($data, $attributes);
+    }
+
+    public function setModel(Species $species): void
+    {
+        $this->species = $species;
     }
 }

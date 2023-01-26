@@ -19,4 +19,6 @@ interface PeopleContract
         array $data,
         array $attributes = [],
     ): People;
+
+    public function setModel(People $people): void;
 }

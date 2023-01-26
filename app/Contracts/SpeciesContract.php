@@ -10,12 +10,14 @@ interface SpeciesContract
 
     public function find(int|string $id): Species|null;
 
-    public function update(array $data): Species;
+    public function update(array $where, array $data): Species;
 
-    public function destroy(int|string $id): Species;
+    public function destroy(int|string $id): bool;
 
     public function firstOrCreate(
         array $data,
         array $attributes = [],
     ): Species;
+
+    public function setModel(Species $species): void;
 }
