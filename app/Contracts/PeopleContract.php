@@ -11,9 +11,9 @@ interface PeopleContract
 
     public function find(int|string $id): People|null;
 
-    public function update(array $data): People;
+    public function update(array $where, array $data): People;
 
-    public function destroy(int|string $id): People;
+    public function destroy(int|string $id): bool;
 
     public function firstOrCreate(
         array $data,
