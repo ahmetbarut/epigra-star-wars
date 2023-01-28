@@ -19,6 +19,7 @@ Genel olarak bunları içerir. Ayrıca API dokümanı burada yer alıyor. [API](
 
 ## API'yi Kullanmadan Önce
 
+> Queues ve Schedule özellikleri kullanıldığından dolayı, bunları kullanabilmeniz gereklidir. Aksi takdirde, verilerin güncellenmesi için manuel olarak komutları çalıştırmak zorunda kalacaksınız.
 ### 1. Projeyi çalışma alanınıza klonlayın
 
 ```bash
