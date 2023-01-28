@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Contracts\PeopleContract;
 use App\Contracts\SpeciesContract;
+use App\Events\PeopleCreatedFromJobEvent;
 use App\Models\Species\Species;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -13,6 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class FetchPeoplesJob implements ShouldQueue
 {
@@ -27,7 +29,7 @@ class FetchPeoplesJob implements ShouldQueue
      * @return void
      */
     public function __construct(
-        protected string $people,
+        public string $people,
         protected Species $species,
         protected PeopleContract $peopleRepository,
     ) {
@@ -42,7 +44,9 @@ class FetchPeoplesJob implements ShouldQueue
     public function handle()
     {
         $response = Http::get($this->people)
-            ->throw()
+            ->throw(
+                fn ($response) => new \Exception($response->body())
+            )
             ->object();
 
         $people = $this->peopleRepository->firstOrCreate([
@@ -57,6 +61,25 @@ class FetchPeoplesJob implements ShouldQueue
             'homeworld' => $response->homeworld,
         ]);
 
+        if (count($response->vehicles) > 0) {
+            foreach ($response->vehicles as $vehicle) {
+                CreateVehiclesForPeopleJob::dispatchSync(
+                    $vehicle,
+                    $people,
+                );
+            }
+        }
         $this->species->peoples()->attach($people->id);
+    }
+
+    /**
+     * The job failed to process.
+     *
+     * @param  \Exception  $exception
+     * @return void
+     */
+    public function failed(\Exception $exception)
+    {
+        Log::error($exception->getMessage());
     }
 }
