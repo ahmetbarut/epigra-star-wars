@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Species;
 
+use App\Contracts\SpeciesContract;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Species\SpeciesResource;
 use App\Models\Species;
 use Illuminate\Http\Request;
 
 class SpeciesController extends Controller
 {
+    public function __construct(protected SpeciesContract $speciesRepository)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,72 +21,17 @@ class SpeciesController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return SpeciesResource::collection($this->speciesRepository->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Species  $species
+     * @param  int  $species
      * @return \Illuminate\Http\Response
      */
-    public function show(Species $species)
+    public function show($species)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Species  $species
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Species $species)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Species  $species
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Species $species)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Species  $species
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Species $species)
-    {
-        //
+        return new SpeciesResource($this->speciesRepository->find($species));
     }
 }

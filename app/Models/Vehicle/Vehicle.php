@@ -22,5 +22,11 @@ class Vehicle extends Model
         'consumables',
         'vehicle_class',
         'url',
+        'people_id',
     ];
+
+    public function getUrlAttribute()
+    {
+        return route('vehicles.show', $this->id);
+    }
 }

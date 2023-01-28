@@ -22,6 +22,10 @@ class Species extends Model
         'language',
     ];
 
+    protected $with = [
+        'peoples',
+    ];
+
     public function peoples()
     {
         return $this->belongsToMany(People::class, 'species_peoples', 'species_id', 'people_id');

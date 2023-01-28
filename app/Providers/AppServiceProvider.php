@@ -41,5 +41,12 @@ class AppServiceProvider extends ServiceProvider
                 new \App\Models\Species\Species()
             )
         );
+
+        $this->app->bind(
+            \App\Contracts\VehicleContract::class,
+            fn ($app) =>   new \App\Repositories\Vehicle\VehicleRepository(
+                new \App\Models\Vehicle\Vehicle(),
+            )
+        );
     }
 }
