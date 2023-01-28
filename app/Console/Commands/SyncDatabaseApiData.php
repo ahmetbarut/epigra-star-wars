@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Events\SyncDatabaseCommandEndedEvent;
+use App\Events\SyncDatabaseCommandStartedEvent;
+use App\Events\SyncDatabaseCommandStartEvent;
 use App\Jobs\FetchPeoplesJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -37,21 +40,28 @@ class SyncDatabaseApiData extends Command
     public function handle()
     {
         $this->info('Veritabanı verileri API\'dan güncelleniyor...');
+        event(new SyncDatabaseCommandStartedEvent());
+
+        $microtime = microtime(true);
 
         $baseUrl = 'https://swapi.dev/api';
 
         $response = Http::get($baseUrl . '/species')
-            ->throw()
+            ->throw(
+                fn ($response) => new \Exception($response->body())
+            )
             ->object();
 
         $page = ceil($response->count / 10);
 
         $species = collect();
 
-        for ($i = 1; $i <= $page; $i++) {
+        for ($pageIndex = 1; $pageIndex <= $page; $pageIndex++) {
             $response = Http::get($baseUrl . '/species', [
-                'page' => $i
-            ])->throw()->object();
+                'page' => $pageIndex
+            ])->throw(
+                fn ($response) => new \Exception($response->body())
+            )->object();
 
             $species = $species->merge($response->results);
         }
@@ -80,6 +90,11 @@ class SyncDatabaseApiData extends Command
                     )->onQueue('fetch-people');
                 }
             });
+
+        event(new SyncDatabaseCommandEndedEvent(
+            microtime(true) - $microtime,
+            $species->count()
+        ));
         return Command::SUCCESS;
     }
 }
