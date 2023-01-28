@@ -3,6 +3,7 @@
 namespace App\Contracts;
 
 use App\Models\People\People;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 interface PeopleContract
@@ -14,6 +15,8 @@ interface PeopleContract
     public function update(array $where, array $data): People;
 
     public function destroy(int|string $id): bool;
+
+    public function all(): Collection;
 
     public function firstOrCreate(
         array $data,

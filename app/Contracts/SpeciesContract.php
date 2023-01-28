@@ -3,6 +3,7 @@
 namespace App\Contracts;
 
 use App\Models\Species\Species;
+use Illuminate\Database\Eloquent\Collection;
 
 interface SpeciesContract
 {
@@ -20,4 +21,6 @@ interface SpeciesContract
     ): Species;
 
     public function setModel(Species $species): void;
+
+    public function all(array $columns = ['*']): Collection;
 }

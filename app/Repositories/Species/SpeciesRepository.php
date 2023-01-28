@@ -4,6 +4,7 @@ namespace App\Repositories\Species;
 
 use App\Contracts\SpeciesContract;
 use App\Models\Species\Species;
+use Illuminate\Database\Eloquent\Collection;
 
 class SpeciesRepository implements SpeciesContract
 {
@@ -42,5 +43,10 @@ class SpeciesRepository implements SpeciesContract
     public function setModel(Species $species): void
     {
         $this->species = $species;
+    }
+
+    public function all(array $columns = ['*']): Collection
+    {
+        return $this->species->all($columns);
     }
 }

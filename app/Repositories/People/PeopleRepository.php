@@ -4,6 +4,7 @@ namespace App\Repositories\People;
 
 use App\Contracts\PeopleContract;
 use App\Models\People\People;
+use Illuminate\Database\Eloquent\Collection;
 
 class PeopleRepository implements PeopleContract
 {
@@ -42,5 +43,10 @@ class PeopleRepository implements PeopleContract
     public function setModel(People $people): void
     {
         $this->people = $people;
+    }
+
+    public function all(array $columns = ['*']): Collection
+    {
+        return $this->people->all($columns);
     }
 }
