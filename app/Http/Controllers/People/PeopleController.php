@@ -19,8 +19,8 @@ class PeopleController extends Controller
         return PeopleResource::collection($this->peopleRepository->all());
     }
 
-    public function show(People $people)
+    public function show(int $people)
     {
-        return new PeopleResource($people);
+        return new PeopleResource($this->peopleRepository->find($people));
     }
 }
